@@ -72,9 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (mTextureView.isAvailable()) {
             Log.i(LOG_TAG,"mTextureView isAvailable");
-            new Handler().postDelayed(()-> {
-                mCameraVideoRecorder.openCamera(mTextureView.getWidth(), mTextureView.getHeight());
-            },100) ;
+            mCameraVideoRecorder.openCamera(mTextureView.getWidth(), mTextureView.getHeight());
         } else {
             mTextureView.setSurfaceTextureListener(mCameraVideoRecorder.mSurfaceTextureListener);
         }
@@ -84,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         Log.i(LOG_TAG,"onPause");
         super.onPause();
-        mCameraVideoRecorder.stopBackgroundThread();
+//        mCameraVideoRecorder.stopBackgroundThread();
     }
 
 

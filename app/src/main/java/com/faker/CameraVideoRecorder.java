@@ -46,6 +46,7 @@ public class CameraVideoRecorder {
     private OnButtonUpdateListener buttonUpdateListener;
     private final String LOG_TAG = "faker_log";
 
+    private boolean isInit;
     private AutoFitTextureView mTextureView;
     private boolean mIsRecording = false;
     boolean getIsRecording() {
@@ -383,7 +384,7 @@ public class CameraVideoRecorder {
                 public void run() {
                     buttonUpdateListener.onButtonUpdate("停止");
                     // UI
-//                    mActivity.mButtonStatus.setText("停止");
+//                  mActivity.mButtonStatus.setText("停止");
                 }
             });
         }
@@ -454,7 +455,7 @@ public class CameraVideoRecorder {
 
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
+            startPreview();
         }
 
         @Override
