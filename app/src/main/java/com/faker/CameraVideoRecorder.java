@@ -26,6 +26,7 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.concurrent.Semaphore;
 
 public class CameraVideoRecorder {
 
+    private boolean isInit = false;
     public CameraVideoRecorder(Activity mActivity) {
         this.mActivity = mActivity;
     }
@@ -46,7 +48,6 @@ public class CameraVideoRecorder {
     private OnButtonUpdateListener buttonUpdateListener;
     private final String LOG_TAG = "faker_log";
 
-    private boolean isInit;
     private AutoFitTextureView mTextureView;
     private boolean mIsRecording = false;
     boolean getIsRecording() {
@@ -54,7 +55,6 @@ public class CameraVideoRecorder {
     }
 
     private String mNextVideoAbsolutePath;
-
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
 
@@ -170,7 +170,6 @@ public class CameraVideoRecorder {
     private Handler mBackGroundHandler;
 
     public void startBackgroundThread() {
-
         mBackGroundThread = new HandlerThread("CameraBackground");
         mBackGroundThread.start();
         mBackGroundHandler = new Handler(mBackGroundThread.getLooper());
@@ -205,7 +204,7 @@ public class CameraVideoRecorder {
         CameraManager cameraManager = (CameraManager) mActivity.getSystemService(Context.CAMERA_SERVICE);
 
         try {
-            String cameraId = cameraManager.getCameraIdList()[0];
+            String cameraId = cameraManager.getCameraIdList()[1];
 
             //2 初始化摄像头设备id的属性
             CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics(cameraId);
@@ -230,7 +229,7 @@ public class CameraVideoRecorder {
 
             //6 选择一组合适的预览的size组合
             mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height, mVideoSize);
-//            mPreviewSize = new Size(1920,1080);
+            mPreviewSize = new Size(1920,1080);
             Log.i(LOG_TAG, "mPreviewSize.getWidth(): " + mPreviewSize.getWidth() + ",mPreviewSize.getHeight(): " + mPreviewSize.getHeight());
 
 
@@ -455,7 +454,9 @@ public class CameraVideoRecorder {
 
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-            startPreview();
+            if(isInit()){
+                startPreview();
+            }
         }
 
         @Override
@@ -468,5 +469,13 @@ public class CameraVideoRecorder {
 
         }
     };
+
+    public boolean isInit() {
+        return isInit;
+    }
+
+    public void setInit(boolean init) {
+        isInit = init;
+    }
 
 }

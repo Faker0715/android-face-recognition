@@ -1,5 +1,6 @@
 package com.faker;
 
+
 import android.Manifest;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,13 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,CameraVideoRecorder.OnButtonUpdateListener   {
 
     private final String LOG_TAG = "faker_log";
 
-
+    private ImageView mMaskImage;
     private AutoFitTextureView mTextureView;
     private Button mButtonStatus;
     private Button mButtonFinish;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initView();
         initPermission();
+
+
         mCameraVideoRecorder = new CameraVideoRecorder(this);
         mCameraVideoRecorder.setTextureView(mTextureView);
         mCameraVideoRecorder.setButtonUpdateListener(this);
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mTextureView = findViewById(R.id.texture_view);
         mButtonStatus = findViewById(R.id.btn_status);
         mButtonFinish = findViewById(R.id.btn_finish);
-
+        mMaskImage = findViewById(R.id.mask_img);
         mButtonStatus.setOnClickListener(this);
         mButtonFinish.setOnClickListener(this);
     }
@@ -68,7 +72,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         Log.i(LOG_TAG,"onResume");
+
         mCameraVideoRecorder.startBackgroundThread();
+        mCameraVideoRecorder.setInit(false);
 
         if (mTextureView.isAvailable()) {
             Log.i(LOG_TAG,"mTextureView isAvailable");
@@ -76,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             mTextureView.setSurfaceTextureListener(mCameraVideoRecorder.mSurfaceTextureListener);
         }
+        mCameraVideoRecorder.setInit(true);
     }
 
     @Override
@@ -105,4 +112,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
+
 }
