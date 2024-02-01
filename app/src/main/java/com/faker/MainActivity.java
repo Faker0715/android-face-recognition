@@ -28,11 +28,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initView();
-        initPermission();
-
-
         mCameraVideoRecorder = new CameraVideoRecorder(this);
+        initPermission();
+        initView();
+
+
         mCameraVideoRecorder.setTextureView(mTextureView);
         mCameraVideoRecorder.setButtonUpdateListener(this);
     }
@@ -74,20 +74,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.i(LOG_TAG,"onResume");
 
         mCameraVideoRecorder.startBackgroundThread();
-        mCameraVideoRecorder.setInit(false);
-
         if (mTextureView.isAvailable()) {
             Log.i(LOG_TAG,"mTextureView isAvailable");
             mCameraVideoRecorder.openCamera(mTextureView.getWidth(), mTextureView.getHeight());
         } else {
             mTextureView.setSurfaceTextureListener(mCameraVideoRecorder.mSurfaceTextureListener);
         }
-        mCameraVideoRecorder.setInit(true);
     }
 
     @Override
     protected void onPause() {
         Log.i(LOG_TAG,"onPause");
+        if (mCameraVideoRecorder.getIsRecording()) {
+            mCameraVideoRecorder.stopRecording();
+            mButtonStatus.setText("开始录制");
+        }
         super.onPause();
 //        mCameraVideoRecorder.stopBackgroundThread();
     }
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (perMissionCamera == -1 || storagePermission == -1 || recordPermission == -1) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, 1000);
         }
+        mCameraVideoRecorder.setInit(true);
     }
 
     @Override
