@@ -140,15 +140,14 @@ public class CameraVideoRecorder {
         mMediaRecorder.setVideoSize(mVideoSize.getWidth(), mVideoSize.getHeight());
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        int rotation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
-        switch (mSensorOrientation) {
-            case SENSOR_ORIENTATION_DEFAULT_DEGREES:
-                mMediaRecorder.setOrientationHint(DEFAULT_ORIENTATIONS.get(rotation));
-                break;
-            case SENSOR_ORIENTATION_INVERSE_DEGREES:
-                mMediaRecorder.setOrientationHint(INVERSE_ORIENTATIONS.get(rotation));
-                break;
-        }
+        int orientation = mActivity.getWindowManager().getDefaultDisplay().getRotation();
+            if(orientation == 270 || orientation == 90 || orientation == 180){
+                mMediaRecorder.setOrientationHint(180);
+            }else{
+                mMediaRecorder.setOrientationHint(270);
+            }
+
+
         try {
             mMediaRecorder.prepare();
         } catch (IOException e) {
@@ -454,9 +453,9 @@ public class CameraVideoRecorder {
 
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-            if(isInit()){
-                startPreview();
-            }
+//            if(isInit()){
+//                startPreview();
+//            }
         }
 
         @Override
